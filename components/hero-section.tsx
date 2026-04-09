@@ -149,22 +149,22 @@ export function HeroSection() {
         >
           {/* Image with parallax scale */}
           <motion.div 
-            className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-muted"
+            className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-[#f5f4f2]"
             style={{ 
               scale: smoothImageScale,
               x: smoothImageX,
             }}
           >
             <Image
-              src="/images/founder.jpg"
-              alt="Get a Site That Actually Brings You Clients"
+              src="/images/meresimplicity-logo.png"
+              alt="Meresimplicity - Get a Site That Actually Brings You Clients"
               fill
-              className="object-cover"
+              className="object-contain p-8"
             />
             {/* Overlay gradient on scroll */}
             <motion.div
-              className="absolute inset-0 bg-gradient-to-t from-foreground/10 to-transparent"
-              style={{ opacity: useTransform(valueScrollProgress, [0, 1], [0, 0.3]) }}
+              className="absolute inset-0 bg-gradient-to-t from-foreground/5 to-transparent"
+              style={{ opacity: useTransform(valueScrollProgress, [0, 1], [0, 0.2]) }}
             />
           </motion.div>
 
