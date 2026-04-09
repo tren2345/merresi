@@ -2,15 +2,20 @@
 
 import { useRef } from "react"
 import { motion, useInView } from "framer-motion"
-import { Check, X } from "lucide-react"
+import { Frown, Check } from "lucide-react"
 
-const comparisonItems = [
-  { feature: "Custom code, not templates", us: true, others: false },
-  { feature: "Python automation included", us: true, others: false },
-  { feature: "IE principles applied", us: true, others: false },
-  { feature: "CIPC integration ready", us: true, others: false },
-  { feature: "Conversion-focused design", us: true, others: false },
-  { feature: "Ongoing optimization", us: true, others: false },
+const painPoints = [
+  "You're tired of your website not bringing in any results at all...?",
+  "Customers visit your site, but they don't reach out or take action.",
+  "It's slow, buggy, or even goes down at the worst times.",
+  "You want a decent website but you don't know who you can trust..?",
+]
+
+const solutions = [
+  "Because I'm not about false promises, I keep it real.",
+  "We create websites that guide visitors toward calling or booking services.",
+  "We keep your site fast, secure, and running 24/7 without issues.",
+  "My work is high quality.",
 ]
 
 export function ComparisonSection() {
@@ -20,9 +25,9 @@ export function ComparisonSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative py-24 lg:py-32 bg-[#FAFAFA]"
+      className="relative py-24 lg:py-32 bg-white"
     >
-      <div className="mx-auto max-w-4xl px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -30,67 +35,73 @@ export function ComparisonSection() {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <span className="text-sm font-medium text-[#8B7A9E] uppercase tracking-wider">
-            The Difference
-          </span>
-          <h2 className="mt-4 text-3xl sm:text-4xl font-normal text-foreground font-serif">
-            Engineering vs. Just Design
+          <h2 className="text-3xl sm:text-4xl font-normal text-foreground font-serif">
+            Business Owners Frustrations Into Solutions
           </h2>
         </motion.div>
 
-        {/* Comparison Table */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="rounded-[20px] bg-white shadow-[0px_4px_12px_rgba(0,0,0,0.05)] overflow-hidden"
-        >
-          {/* Header Row */}
-          <div className="grid grid-cols-3 bg-[#F8F6FA] p-4">
-            <div className="text-sm font-medium text-[#6B5B7A]">Feature</div>
-            <div className="text-sm font-medium text-[#6B5B7A] text-center">
-              Meresimplicity
+        {/* Two Card Layout */}
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* Pain Points Card */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="rounded-2xl bg-foreground text-white p-8"
+          >
+            <h3 className="text-lg font-semibold uppercase tracking-wide mb-8">
+              Does This Sound And Feel Familiar?
+            </h3>
+            <div className="space-y-6">
+              {painPoints.map((point, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={isInView ? { opacity: 1, x: 0 } : {}}
+                  transition={{ duration: 0.3, delay: 0.3 + index * 0.1 }}
+                  className="flex items-start gap-4"
+                >
+                  <div className="flex-shrink-0 flex h-8 w-8 items-center justify-center rounded-full bg-white/10 border border-white/20">
+                    <Frown className="h-4 w-4 text-white/70" />
+                  </div>
+                  <p className="text-white/90 text-base leading-relaxed pt-1">
+                    {point}
+                  </p>
+                </motion.div>
+              ))}
             </div>
-            <div className="text-sm font-medium text-[#6B5B7A] text-center">
-              Typical Agencies
-            </div>
-          </div>
+          </motion.div>
 
-          {/* Comparison Rows */}
-          {comparisonItems.map((item, index) => (
-            <motion.div
-              key={item.feature}
-              initial={{ opacity: 0, x: -20 }}
-              animate={isInView ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.3, delay: 0.3 + index * 0.05 }}
-              className="grid grid-cols-3 p-4 border-t border-[#F0EDF3] items-center"
-            >
-              <div className="text-sm text-[#2D2438]">{item.feature}</div>
-              <div className="flex justify-center">
-                {item.us ? (
-                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#E8F5E9]">
-                    <Check className="h-4 w-4 text-[#4CAF50]" />
+          {/* Solutions Card */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="rounded-2xl bg-[#FAFAFA] border border-foreground/10 p-8"
+          >
+            <h3 className="text-lg font-semibold uppercase tracking-wide mb-8 text-foreground">
+              Good News, It&apos;s Your Lucky Day!
+            </h3>
+            <div className="space-y-6">
+              {solutions.map((solution, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: 10 }}
+                  animate={isInView ? { opacity: 1, x: 0 } : {}}
+                  transition={{ duration: 0.3, delay: 0.4 + index * 0.1 }}
+                  className="flex items-start gap-4"
+                >
+                  <div className="flex-shrink-0 flex h-8 w-8 items-center justify-center rounded-full bg-[#E3F2FD]">
+                    <Check className="h-4 w-4 text-[#2196F3]" />
                   </div>
-                ) : (
-                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#FFEBEE]">
-                    <X className="h-4 w-4 text-[#EF5350]" />
-                  </div>
-                )}
-              </div>
-              <div className="flex justify-center">
-                {item.others ? (
-                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#E8F5E9]">
-                    <Check className="h-4 w-4 text-[#4CAF50]" />
-                  </div>
-                ) : (
-                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#FFEBEE]">
-                    <X className="h-4 w-4 text-[#EF5350]" />
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
+                  <p className="text-foreground/80 text-base leading-relaxed pt-1">
+                    {solution}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
       </div>
     </section>
   )
