@@ -1,13 +1,15 @@
 "use client"
 
 import { useRef } from "react"
-import { motion, useInView } from "framer-motion"
+import { motion, useScroll, useTransform, useSpring, useInView } from "framer-motion"
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+
+const springConfig = { stiffness: 100, damping: 30, mass: 0.5 }
 
 const faqs = [
   {
@@ -40,22 +42,33 @@ export function FAQSection() {
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
 
+  // Scroll-based transforms
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "center center"],
+  })
+
+  const smoothProgress = useSpring(scrollYProgress, springConfig)
+  const contentY = useTransform(smoothProgress, [0, 1], [50, 0])
+  const smoothContentY = useSpring(contentY, springConfig)
+
   return (
-    <section ref={ref} id="faq" className="py-20 lg:py-32">
+    <section ref={ref} id="faq" className="py-20 lg:py-32 overflow-hidden">
       <div className="mx-auto max-w-6xl px-6 lg:px-8">
         <div className="text-center mb-16">
           <motion.span 
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5 }}
+            transition={{ type: "spring", ...springConfig }}
             className="inline-flex items-center rounded-full border border-border bg-background px-4 py-1.5 text-sm text-muted-foreground mb-6"
+            whileHover={{ scale: 1.05 }}
           >
             FAQ
           </motion.span>
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5, delay: 0.1 }}
+            transition={{ type: "spring", ...springConfig, delay: 0.1 }}
             className="text-3xl sm:text-4xl font-normal text-foreground font-serif text-balance"
           >
             Common questions answered
@@ -63,25 +76,53 @@ export function FAQSection() {
         </div>
         
         <motion.div 
-          initial={{ opacity: 0, y: 40 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          style={{ y: smoothContentY }}
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
           transition={{ duration: 0.5, delay: 0.2 }}
           className="mx-auto max-w-3xl"
         >
           <Accordion type="single" collapsible className="w-full">
             {faqs.map((faq, index) => (
-              <AccordionItem 
-                key={index} 
-                value={`item-${index}`}
-                className="border-border"
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
+                animate={isInView ? { opacity: 1, x: 0 } : {}}
+                transition={{
+                  type: "spring",
+                  stiffness: 100,
+                  damping: 15,
+                  delay: 0.2 + index * 0.1,
+                }}
               >
-                <AccordionTrigger className="text-left text-foreground hover:text-foreground hover:no-underline py-6">
-                  {faq.question}
-                </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground pb-6">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
+                <AccordionItem 
+                  value={`item-${index}`}
+                  className="border-border"
+                >
+                  <motion.div
+                    whileHover={{ x: 4 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  >
+                    <AccordionTrigger className="text-left text-foreground hover:text-foreground hover:no-underline py-6 transition-colors">
+                      <motion.span
+                        initial={{ opacity: 0.8 }}
+                        whileHover={{ opacity: 1 }}
+                      >
+                        {faq.question}
+                      </motion.span>
+                    </AccordionTrigger>
+                  </motion.div>
+                  <AccordionContent className="text-muted-foreground pb-6">
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                    >
+                      {faq.answer}
+                    </motion.div>
+                  </AccordionContent>
+                </AccordionItem>
+              </motion.div>
             ))}
           </Accordion>
         </motion.div>

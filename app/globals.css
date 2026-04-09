@@ -122,8 +122,13 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
@@ -189,4 +194,54 @@
 .logic-grid {
   background-image: radial-gradient(circle, #E5E5E5 1px, transparent 1px);
   background-size: 32px 32px;
+}
+
+/* Smooth scroll override for programmatic scroll */
+.scroll-smooth {
+  scroll-behavior: smooth;
+}
+
+/* Custom scroll spring physics via CSS (for non-JS fallback) */
+@media (prefers-reduced-motion: no-preference) {
+  * {
+    scroll-behavior: smooth;
+  }
+  
+  /* Stagger animation delays for child elements */
+  .stagger-children > * {
+    --stagger-delay: 0.1s;
+    animation-delay: calc(var(--stagger-index, 0) * var(--stagger-delay));
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Spring-like hover effects */
+.spring-hover {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.spring-hover:hover {
+  transform: translateY(-4px);
+}
+
+/* Scroll-linked parallax layers */
+.parallax-slow {
+  will-change: transform;
+  transform: translateZ(-1px) scale(2);
+}
+
+.parallax-fast {
+  will-change: transform;
+  transform: translateZ(0);
 }

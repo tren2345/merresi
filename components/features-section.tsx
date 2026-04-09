@@ -1,8 +1,10 @@
 "use client"
 
 import { useRef } from "react"
-import { motion, useInView } from "framer-motion"
+import { motion, useScroll, useTransform, useSpring, useInView } from "framer-motion"
 import { Code, Palette, LineChart, Cog, Globe, Shield } from "lucide-react"
+
+const springConfig = { stiffness: 100, damping: 30, mass: 0.5 }
 
 const features = [
   {
@@ -47,18 +49,30 @@ export function FeaturesSection() {
   const sectionRef = useRef<HTMLDivElement>(null)
   const isInView = useInView(sectionRef, { once: true, margin: "-10%" })
 
+  // Scroll-based transforms for the entire section
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  })
+
+  const smoothProgress = useSpring(scrollYProgress, springConfig)
+  
+  // Background parallax
+  const bgY = useTransform(smoothProgress, [0, 1], [0, 50])
+
   return (
     <section
       ref={sectionRef}
       id="services"
-      className="relative py-24 lg:py-32"
+      className="relative py-24 lg:py-32 overflow-hidden"
     >
-      {/* Dotted Grid Background */}
-      <div
+      {/* Dotted Grid Background with parallax */}
+      <motion.div
         className="absolute inset-0"
         style={{
           backgroundImage: `radial-gradient(circle, #E5E5E5 1px, transparent 1px)`,
           backgroundSize: "32px 32px",
+          y: bgY,
         }}
       />
 
@@ -67,18 +81,33 @@ export function FeaturesSection() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
+          transition={{ type: "spring", ...springConfig }}
           className="text-center mb-16"
         >
-          <span className="text-sm font-medium text-[#8B7A9E] uppercase tracking-wider">
+          <motion.span 
+            className="text-sm font-medium text-[#8B7A9E] uppercase tracking-wider inline-block"
+            initial={{ opacity: 0, y: 10 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ type: "spring", ...springConfig }}
+          >
             What We Build
-          </span>
-          <h2 className="mt-4 text-3xl sm:text-4xl font-normal text-foreground font-serif">
+          </motion.span>
+          <motion.h2 
+            className="mt-4 text-3xl sm:text-4xl font-normal text-foreground font-serif"
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ type: "spring", ...springConfig, delay: 0.1 }}
+          >
             Engineering Excellence, Delivered
-          </h2>
-          <p className="mt-4 text-muted-foreground max-w-xl mx-auto">
+          </motion.h2>
+          <motion.p 
+            className="mt-4 text-muted-foreground max-w-xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ type: "spring", ...springConfig, delay: 0.2 }}
+          >
             We combine technical expertise with business acumen to create systems that drive real growth.
-          </p>
+          </motion.p>
         </motion.div>
 
         {/* Features Grid */}
@@ -95,11 +124,26 @@ export function FeaturesSection() {
                 delay: index * 0.1,
               }}
             >
-              <div className="h-full flex flex-col p-6 rounded-[20px] bg-white shadow-[0px_4px_12px_rgba(0,0,0,0.05)] hover:shadow-[0px_8px_24px_rgba(180,156,197,0.15)] transition-all duration-300 hover:-translate-y-1">
+              <motion.div 
+                className="h-full flex flex-col p-6 rounded-[20px] bg-white shadow-[0px_4px_12px_rgba(0,0,0,0.05)] transition-colors duration-300"
+                whileHover={{ 
+                  y: -8,
+                  boxShadow: "0px 16px 40px rgba(180, 156, 197, 0.2)",
+                }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              >
                 {/* Icon */}
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#F8F6FA] text-[#6B5B7A] mb-4">
+                <motion.div 
+                  className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#F8F6FA] text-[#6B5B7A] mb-4"
+                  whileHover={{ 
+                    scale: 1.1, 
+                    rotate: 5,
+                    backgroundColor: "rgba(180, 156, 197, 0.3)" 
+                  }}
+                  transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                >
                   {feature.icon}
-                </div>
+                </motion.div>
 
                 {/* Content */}
                 <h3 className="font-semibold text-[#2D2438] text-lg">
@@ -108,7 +152,7 @@ export function FeaturesSection() {
                 <p className="mt-2 text-[#8B7A9E] text-sm flex-grow">
                   {feature.description}
                 </p>
-              </div>
+              </motion.div>
             </motion.div>
           ))}
         </div>
